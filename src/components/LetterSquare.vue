@@ -31,14 +31,14 @@
     font-size: 24px;
     font-weight: bold;
     color: #fff;
-    border: 3px solid #555;
+    border: 3px solid #888;
 
     &.default {
       background-color: none;
     }
     &.absent {
-      background-color: #5e5e5e;
-      border-color: #5e5e5e;
+      background-color: #333;
+      border-color: #333;
     }
     &.correct {
       background-color: #15b815;

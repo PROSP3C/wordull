@@ -7,7 +7,7 @@
   const keys = [
     [
       { letter: 'Q', keyState: KeyState.Default },
-      { letter: 'W', keyState: KeyState.Default },
+      { letter: 'W', keyState: KeyState.Absent },
       { letter: 'E', keyState: KeyState.Default },
       { letter: 'R', keyState: KeyState.Default },
       { letter: 'T', keyState: KeyState.Default },
@@ -18,9 +18,9 @@
       { letter: 'P', keyState: KeyState.Default },
     ],
     [
-      { letter: 'A', keyState: KeyState.Default },
+      { letter: 'A', keyState: KeyState.Absent },
       { letter: 'S', keyState: KeyState.Default },
-      { letter: 'D', keyState: KeyState.Default },
+      { letter: 'D', keyState: KeyState.Correct },
       { letter: 'F', keyState: KeyState.Default },
       { letter: 'G', keyState: KeyState.Default },
       { letter: 'H', keyState: KeyState.Default },
@@ -32,12 +32,12 @@
       { letter: 'Enter', keyState: KeyState.Default },
       { letter: 'Z', keyState: KeyState.Default },
       { letter: 'X', keyState: KeyState.Default },
-      { letter: 'C', keyState: KeyState.Default },
+      { letter: 'C', keyState: KeyState.Correct },
       { letter: 'V', keyState: KeyState.Default },
-      { letter: 'B', keyState: KeyState.Default },
+      { letter: 'B', keyState: KeyState.Absent },
       { letter: 'N', keyState: KeyState.Default },
       { letter: 'M', keyState: KeyState.Default },
-      { letter: '<', keyState: KeyState.Default },
+      { letter: 'Backspace', keyState: KeyState.Default },
     ],
   ]
 </script>
@@ -45,7 +45,7 @@
 <template>
   <q-page class="row items-center justify-evenly">
     <letter-square
-      letter="C"
+      letter="A"
       :letter-square-state="LetterSquareState.Absent"
     />
     <letter-square

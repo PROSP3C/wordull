@@ -12,7 +12,13 @@
     class="KeyboardKey"
     :class="props.keyState.toLowerCase()"
   >
-    {{ props.letter }}
+    <template v-if="props.letter === 'Backspace'">
+      <q-icon name="backspace" />
+    </template>
+
+    <template v-else>
+      {{ props.letter }}
+    </template>
   </div>
 </template>
 
@@ -32,10 +38,10 @@
     user-select: none;
 
     &.default {
-      background-color: #333;
+      background-color: #888;
     }
     &.absent {
-      background-color: #5e5e5e;
+      background-color: #333;
     }
     &.correct {
       background-color: #15b815;
