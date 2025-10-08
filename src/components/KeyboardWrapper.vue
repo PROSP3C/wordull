@@ -1,9 +1,9 @@
 <script lang="ts" setup>
   import KeyboardKey from '@/components/KeyboardKey.vue'
-  import type { KeyState } from '@/enums'
+  import type { LetterState } from '@/enums'
 
   const props = defineProps<{
-    keys: { letter: string; keyState: KeyState }[][]
+    keys: { letter: string; letterState: LetterState }[][]
   }>()
 </script>
 
@@ -18,7 +18,7 @@
         v-for="key in row"
         :key="key.letter"
         :letter="key.letter"
-        :key-state="key.keyState"
+        :letter-state="key.letterState"
       />
     </div>
   </div>

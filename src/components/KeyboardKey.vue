@@ -1,16 +1,32 @@
 <script lang="ts" setup>
-  import type { KeyState } from '@/enums'
+  import type { LetterState } from '@/enums'
+  import { useGameLogicStore } from '@/stores/gameLogic'
 
   const props = defineProps<{
     letter: string
-    keyState: KeyState
+    letterState: LetterState
   }>()
+
+  const handleClick = (letter: string) => {
+    if (letter === 'Enter') {
+      useGameLogicStore().handleGuess()
+      return
+    }
+
+    if (letter === 'Backspace') {
+      useGameLogicStore().handleBackspace()
+      return
+    }
+
+    useGameLogicStore().handleLetterInput(letter)
+  }
 </script>
 
 <template>
   <div
     class="KeyboardKey"
-    :class="props.keyState.toLowerCase()"
+    :class="props.letterState.toLowerCase()"
+    @click="() => handleClick(props.letter)"
   >
     <template v-if="props.letter === 'Backspace'">
       <q-icon name="backspace" />
@@ -25,6 +41,7 @@
 <style lang="scss" scoped>
   .KeyboardKey {
     width: auto;
+    min-width: 2.2rem;
     height: 3.5rem;
     padding: 0.75rem;
     display: flex;

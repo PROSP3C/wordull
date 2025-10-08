@@ -1,21 +1,16 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import { LetterSquareState } from '@/enums'
+  import type { LetterState } from '@/enums'
 
   const props = defineProps<{
     letter: string
-    letterSquareState: LetterSquareState
+    letterState: LetterState
   }>()
-
-  const currentLetterSquareState = ref<LetterSquareState>(
-    props.letterSquareState || LetterSquareState.Default,
-  )
 </script>
 
 <template>
   <div
     class="LetterSquare"
-    :class="currentLetterSquareState.toLowerCase()"
+    :class="letterState.toLowerCase()"
   >
     {{ props.letter }}
   </div>
@@ -30,7 +25,7 @@
     justify-content: center;
     font-size: 24px;
     font-weight: bold;
-    color: #fff;
+    color: #333;
     border: 3px solid #888;
 
     &.default {
@@ -39,14 +34,17 @@
     &.absent {
       background-color: #333;
       border-color: #333;
+      color: #fff;
     }
     &.correct {
       background-color: #15b815;
       border-color: #15b815;
+      color: #fff;
     }
     &.present {
       background-color: #ffd000;
       border-color: #ffd000;
+      color: #fff;
     }
   }
 </style>
