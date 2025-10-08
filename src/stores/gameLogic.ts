@@ -5,7 +5,6 @@ import wordlib from 'word-lib'
 /**
  * TODO:
   - multiple of the same letter, but only one in solution, show single orange letter only
-  - make sure the solution is in word list
  */
 
 const guessesDefault = [
