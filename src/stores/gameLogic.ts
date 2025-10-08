@@ -93,7 +93,7 @@ export const useGameLogicStore = defineStore('gameLogic', {
   state: () => ({
     gameState: GameState.Ready,
 
-    solution: '',
+    solution: 'DWAAL',
 
     guesses: structuredClone(guessesDefault),
     keys: structuredClone(keysDefault),
@@ -108,14 +108,16 @@ export const useGameLogicStore = defineStore('gameLogic', {
 
   actions: {
     startGame() {
-      this.solution = wordlib
-        .random({ minLength: 5, maxLength: 5 })
-        .toUpperCase()
+      // this.solution = wordlib
+      //   .random({ minLength: 5, maxLength: 5 })
+      //   .toUpperCase()
       this.guesses = structuredClone(guessesDefault)
       this.keys = structuredClone(keysDefault)
       this.currentRowGuessIndex = 0
       this.currentLetterGuessIndex = 0
       this.gameState = GameState.Playing
+
+      console.log(this.solution)
     },
 
     handleLetterInput(letter: string) {
@@ -170,11 +172,25 @@ export const useGameLogicStore = defineStore('gameLogic', {
             .toLowerCase(),
         )
       ) {
+        const duplicatePresentLetterGuesses: string[] = []
+
         this.guesses[this.currentRowGuessIndex]?.forEach((guess, index) => {
           if (guess.letter === this.solutionArray[index]) {
             stateToSet = LetterState.Correct
+            duplicatePresentLetterGuesses.push(guess.letter)
           } else if (this.solutionArray.includes(guess.letter)) {
-            stateToSet = LetterState.Present
+            if (
+              this.solutionArray.filter((l) => l === guess.letter).length > 1
+            ) {
+              stateToSet = LetterState.Present
+            } else {
+              stateToSet = duplicatePresentLetterGuesses.includes(guess.letter)
+                ? LetterState.Absent
+                : this.solutionArray.includes(guess.letter)
+                  ? LetterState.Absent
+                  : LetterState.Present
+              duplicatePresentLetterGuesses.push(guess.letter)
+            }
           } else {
             stateToSet = LetterState.Absent
           }

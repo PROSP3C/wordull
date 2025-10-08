@@ -52,7 +52,7 @@
       v-if="gameState === GameState.Lost"
       class="flex column justify-center items-center"
     >
-      <h1>You Lost!</h1>
+      <h1>You Lost...</h1>
       <q-btn
         color="primary"
         icon-right="restart_alt"
