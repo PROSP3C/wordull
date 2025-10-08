@@ -25,7 +25,7 @@
     justify-content: center;
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: #fff;
     border: 3px solid #888;
 
     &.default {
@@ -34,17 +34,14 @@
     &.absent {
       background-color: #333;
       border-color: #333;
-      color: #fff;
     }
     &.correct {
       background-color: #15b815;
       border-color: #15b815;
-      color: #fff;
     }
     &.present {
       background-color: #ffd000;
       border-color: #ffd000;
-      color: #fff;
     }
   }
 </style>

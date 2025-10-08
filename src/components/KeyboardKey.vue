@@ -60,6 +60,9 @@
     &.absent {
       background-color: #333;
     }
+    &.present {
+      background-color: #ffd000;
+    }
     &.correct {
       background-color: #15b815;
     }
