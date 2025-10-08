@@ -3,6 +3,12 @@ import { GameState, LetterState } from '@/enums'
 import type { AxiosResponse } from 'axios'
 import { api } from '@/boot/axios'
 
+/**
+ * TODO:
+  - multiple of the same letter, but only one in solution, show single orange letter only
+  - make sure the solution is in word list
+ */
+
 const guessesDefault = [
   [
     { letter: '', letterState: LetterState.Default, hasGuessed: false },
