@@ -1,7 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { GameState, LetterState } from '@/enums'
-import type { AxiosResponse } from 'axios'
-import { api } from '@/boot/axios'
+import wordlib from 'word-lib'
 
 /**
  * TODO:
@@ -110,20 +109,14 @@ export const useGameLogicStore = defineStore('gameLogic', {
 
   actions: {
     startGame() {
+      this.solution = wordlib
+        .random({ minLength: 5, maxLength: 5 })
+        .toUpperCase()
       this.guesses = structuredClone(guessesDefault)
       this.keys = structuredClone(keysDefault)
       this.currentRowGuessIndex = 0
       this.currentLetterGuessIndex = 0
       this.gameState = GameState.Playing
-
-      api
-        .get('https://random-word-api.herokuapp.com/word?length=5')
-        .then((response: AxiosResponse) => {
-          this.solution = response.data[0].toUpperCase()
-        })
-        .catch(() => {
-          this.solution = 'REACT'
-        })
     },
 
     handleLetterInput(letter: string) {
@@ -170,58 +163,51 @@ export const useGameLogicStore = defineStore('gameLogic', {
 
       let stateToSet = LetterState.Default
 
-      api
-        .get(
-          `https://api.dictionaryapi.dev/api/v2/entries/en/${currentRow
+      if (
+        wordlib.exists(
+          currentRow
             .map((g) => g.letter)
             .join('')
-            .toLowerCase()}`,
+            .toLowerCase(),
         )
-        .then((response: AxiosResponse) => {
-          if (response.status !== 200) {
-            throw new Error('Not a valid word')
+      ) {
+        this.guesses[this.currentRowGuessIndex]?.forEach((guess, index) => {
+          if (guess.letter === this.solutionArray[index]) {
+            stateToSet = LetterState.Correct
+          } else if (this.solutionArray.includes(guess.letter)) {
+            stateToSet = LetterState.Present
+          } else {
+            stateToSet = LetterState.Absent
           }
 
-          this.guesses[this.currentRowGuessIndex]?.forEach((guess, index) => {
-            if (guess.letter === this.solutionArray[index]) {
-              stateToSet = LetterState.Correct
-            } else if (this.solutionArray.includes(guess.letter)) {
-              stateToSet = LetterState.Present
-            } else {
-              stateToSet = LetterState.Absent
-            }
-
-            this.keys.forEach((row) => {
-              row.forEach((key) => {
-                if (key.letter === guess.letter) {
-                  key.letterState = stateToSet
-                }
-              })
+          this.keys.forEach((row) => {
+            row.forEach((key) => {
+              if (key.letter === guess.letter) {
+                key.letterState = stateToSet
+              }
             })
-
-            guess.letterState = stateToSet
-            guess.hasGuessed = true
           })
 
-          if (
-            this.guesses[this.currentRowGuessIndex]?.every(
-              (guess) => guess.letterState === LetterState.Correct,
-            )
-          ) {
-            this.gameState = GameState.Won
-            return
-          }
-
-          this.currentRowGuessIndex += 1
-          this.currentLetterGuessIndex = 0
-
-          if (this.currentRowGuessIndex === 6) {
-            this.gameState = GameState.Lost
-          }
+          guess.letterState = stateToSet
+          guess.hasGuessed = true
         })
-        .catch(() => {
-          console.log('illegal word')
-        })
+
+        if (
+          this.guesses[this.currentRowGuessIndex]?.every(
+            (guess) => guess.letterState === LetterState.Correct,
+          )
+        ) {
+          this.gameState = GameState.Won
+          return
+        }
+
+        this.currentRowGuessIndex += 1
+        this.currentLetterGuessIndex = 0
+
+        if (this.currentRowGuessIndex === 6) {
+          this.gameState = GameState.Lost
+        }
+      }
     },
   },
 })
