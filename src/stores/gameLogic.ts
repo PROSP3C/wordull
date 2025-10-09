@@ -195,6 +195,7 @@ export const useGameLogicStore = defineStore('gameLogic', {
     },
 
     async evaluateGuesses() {
+      // TODO: refactor to reduce complexity
       let stateToSet = LetterState.Default
       const duplicatePresentLetterGuesses: string[] = []
 
@@ -240,11 +241,22 @@ export const useGameLogicStore = defineStore('gameLogic', {
 
       this.keys.forEach((row) => {
         row.forEach((key) => {
+          // TODO: fix issue with states not taking president - refactor needed
           if (guess && key.letter === guess.letter) {
-            key.letterState =
-              key.letterState === LetterState.Correct
-                ? LetterState.Correct
-                : stateToSet
+            if (key.letterState === LetterState.Default) {
+              key.letterState = stateToSet
+            } else {
+              if (key.letterState === LetterState.Correct) {
+                key.letterState = stateToSet
+              } else if (key.letterState === LetterState.Present) {
+                key.letterState =
+                  stateToSet === LetterState.Correct
+                    ? stateToSet
+                    : key.letterState
+              } else {
+                key.letterState = stateToSet
+              }
+            }
           }
         })
       })
