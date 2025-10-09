@@ -27,21 +27,83 @@
     font-weight: bold;
     color: #fff;
     border: 3px solid #888;
+    background: none;
 
-    &.default {
-      background-color: none;
-    }
     &.absent {
-      background-color: #333;
-      border-color: #333;
+      animation: flipTileAbsent 1s ease forwards;
     }
     &.correct {
-      background-color: #15b815;
-      border-color: #15b815;
+      animation: flipTileCorrent 1s ease forwards;
     }
     &.present {
-      background-color: #ffd000;
-      border-color: #ffd000;
+      animation: flipTilePresent 1s ease forwards;
+    }
+
+    @keyframes flipTileAbsent {
+      0% {
+        transform: rotateX(0deg);
+        background: none;
+        border: 3px solid #888;
+      }
+      50% {
+        transform: rotateX(90deg);
+        background: none;
+        border: 3px solid #888;
+      }
+      51% {
+        transform: rotateX(90deg);
+        background: #333;
+        border: #333;
+      }
+      100% {
+        transform: rotateX(0deg);
+        background: #333;
+        border: #333;
+      }
+    }
+    @keyframes flipTileCorrent {
+      0% {
+        transform: rotateX(0deg);
+        background: none;
+        border: 3px solid #888;
+      }
+      50% {
+        transform: rotateX(90deg);
+        background: none;
+        border: 3px solid #888;
+      }
+      51% {
+        transform: rotateX(90deg);
+        background: #15b815;
+        border: #15b815;
+      }
+      100% {
+        transform: rotateX(0deg);
+        background: #15b815;
+        border: #15b815;
+      }
+    }
+    @keyframes flipTilePresent {
+      0% {
+        transform: rotateX(0deg);
+        background: none;
+        border: 3px solid #888;
+      }
+      50% {
+        transform: rotateX(90deg);
+        background: none;
+        border: 3px solid #888;
+      }
+      51% {
+        transform: rotateX(90deg);
+        background: #ffd000;
+        border: #ffd000;
+      }
+      100% {
+        transform: rotateX(0deg);
+        background: #ffd000;
+        border: #ffd000;
+      }
     }
   }
 </style>

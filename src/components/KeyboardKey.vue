@@ -7,9 +7,9 @@
     letterState: LetterState
   }>()
 
-  const handleClick = (letter: string) => {
+  const handleClick = async (letter: string) => {
     if (letter === 'Enter') {
-      useGameLogicStore().handleGuess()
+      await useGameLogicStore().handleGuess()
       return
     }
 
