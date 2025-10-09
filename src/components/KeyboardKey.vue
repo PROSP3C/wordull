@@ -58,10 +58,10 @@
       animation: flipTileAbsent 1s ease forwards;
     }
     &.present {
-      animation: flipTileCorrect 1s ease forwards;
+      animation: flipTilePresent 1s ease forwards;
     }
     &.correct {
-      animation: flipTilePresent 1s ease forwards;
+      animation: flipTileCorrect 1s ease forwards;
     }
 
     @keyframes flipTileAbsent {
