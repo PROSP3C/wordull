@@ -50,21 +50,73 @@
     font-size: 18px;
     font-weight: bold;
     color: #fff;
-    background-color: #333;
+    background-color: #888;
     border-radius: 4px;
     user-select: none;
 
-    &.default {
-      background-color: #888;
-    }
     &.absent {
-      background-color: #333;
+      animation: flipTileAbsent 1s ease forwards;
     }
     &.present {
-      background-color: #ffd000;
+      animation: flipTileCorrect 1s ease forwards;
     }
     &.correct {
-      background-color: #15b815;
+      animation: flipTilePresent 1s ease forwards;
+    }
+
+    @keyframes flipTileAbsent {
+      0% {
+        transform: rotateX(0deg);
+        background: #888;
+      }
+      50% {
+        transform: rotateX(90deg);
+        background: #888;
+      }
+      51% {
+        transform: rotateX(90deg);
+        background: #333;
+      }
+      100% {
+        transform: rotateX(0deg);
+        background: #333;
+      }
+    }
+    @keyframes flipTileCorrent {
+      0% {
+        transform: rotateX(0deg);
+        background: #333;
+      }
+      50% {
+        transform: rotateX(90deg);
+        background: #333;
+      }
+      51% {
+        transform: rotateX(90deg);
+        background: #15b815;
+      }
+      100% {
+        transform: rotateX(0deg);
+        background: #15b815;
+      }
+    }
+    @keyframes flipTilePresent {
+      0% {
+        transform: rotateX(0deg);
+        background: #333;
+      }
+      50% {
+        transform: rotateX(90deg);
+        background: #333;
+      }
+      51% {
+        transform: rotateX(90deg);
+        background: #ffd000;
+      }
+      100% {
+        transform: rotateX(0deg);
+        background: #ffd000;
+      }
     }
   }
 </style>

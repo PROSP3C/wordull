@@ -198,9 +198,6 @@ export const useGameLogicStore = defineStore('gameLogic', {
       let stateToSet = LetterState.Default
       const duplicatePresentLetterGuesses: string[] = []
 
-      const delay = (ms: number) =>
-        new Promise((resolve) => setTimeout(resolve, ms))
-
       const currentGuesses = this.guesses[this.currentRowGuessIndex]
       if (!currentGuesses) return
 
@@ -225,21 +222,34 @@ export const useGameLogicStore = defineStore('gameLogic', {
           stateToSet = LetterState.Absent
         }
 
-        this.keys.forEach((row) => {
-          row.forEach((key) => {
-            if (guess && key.letter === guess.letter) {
-              key.letterState = stateToSet
-            }
-          })
-        })
-
         if (guess) {
-          guess.letterState = stateToSet
-          guess.hasGuessed = true
+          await this.setLetterState(guess, stateToSet)
         }
-
-        await delay(300)
       }
+    },
+
+    async setLetterState(
+      guess: { letter: string; letterState: LetterState; hasGuessed: boolean },
+      stateToSet: LetterState,
+    ): Promise<void> {
+      const delay = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms))
+
+      guess.letterState = stateToSet
+      guess.hasGuessed = true
+
+      this.keys.forEach((row) => {
+        row.forEach((key) => {
+          if (guess && key.letter === guess.letter) {
+            key.letterState =
+              key.letterState === LetterState.Correct
+                ? LetterState.Correct
+                : stateToSet
+          }
+        })
+      })
+
+      await delay(300)
     },
   },
 })
