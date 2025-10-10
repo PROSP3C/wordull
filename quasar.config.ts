@@ -4,7 +4,7 @@
 import { defineConfig } from '@quasar/app-vite/wrappers'
 import { fileURLToPath } from 'node:url'
 
-export default defineConfig((ctx) => {
+export default defineConfig(() => {
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
     // preFetch: true,
