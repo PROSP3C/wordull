@@ -99,6 +99,8 @@ export const useGameLogicStore = defineStore('gameLogic', {
 
     currentRowGuessIndex: 0,
     currentLetterGuessIndex: 0,
+
+    isGuessInvalidWord: false,
   }),
 
   getters: {
@@ -175,8 +177,12 @@ export const useGameLogicStore = defineStore('gameLogic', {
             .join('')
             .toLowerCase(),
         )
-      )
+      ) {
+        this.isGuessInvalidWord = true
+        await this.delay(this.DELAY_MS)
+        this.isGuessInvalidWord = false
         return
+      }
 
       await this.evaluateGuesses()
 
