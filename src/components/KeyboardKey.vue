@@ -55,68 +55,13 @@
     user-select: none;
 
     &.absent {
-      animation: flipTileAbsent 1s ease forwards;
+      background: #333;
     }
     &.present {
-      animation: flipTilePresent 1s ease forwards;
+      background: #ffd000;
     }
     &.correct {
-      animation: flipTileCorrect 1s ease forwards;
-    }
-
-    @keyframes flipTileAbsent {
-      0% {
-        transform: rotateX(0deg);
-        background: #888;
-      }
-      50% {
-        transform: rotateX(90deg);
-        background: #888;
-      }
-      51% {
-        transform: rotateX(90deg);
-        background: #333;
-      }
-      100% {
-        transform: rotateX(0deg);
-        background: #333;
-      }
-    }
-    @keyframes flipTileCorrent {
-      0% {
-        transform: rotateX(0deg);
-        background: #333;
-      }
-      50% {
-        transform: rotateX(90deg);
-        background: #333;
-      }
-      51% {
-        transform: rotateX(90deg);
-        background: #15b815;
-      }
-      100% {
-        transform: rotateX(0deg);
-        background: #15b815;
-      }
-    }
-    @keyframes flipTilePresent {
-      0% {
-        transform: rotateX(0deg);
-        background: #333;
-      }
-      50% {
-        transform: rotateX(90deg);
-        background: #333;
-      }
-      51% {
-        transform: rotateX(90deg);
-        background: #ffd000;
-      }
-      100% {
-        transform: rotateX(0deg);
-        background: #ffd000;
-      }
+      background: #15b815;
     }
   }
 </style>

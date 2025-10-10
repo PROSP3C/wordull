@@ -2,11 +2,6 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { GameState, LetterState } from '@/enums'
 import wordlib from 'word-lib'
 
-/**
- * TODO:
-  - multiple of the same letter, but only one in solution, show single orange letter only
- */
-
 const guessesDefault = [
   [
     { letter: '', letterState: LetterState.Default, hasGuessed: false },
@@ -93,10 +88,13 @@ export const useGameLogicStore = defineStore('gameLogic', {
   state: () => ({
     gameState: GameState.Ready,
 
-    solution: 'DWAAL',
+    solution: '',
+
+    DELAY_MS: 400,
 
     guesses: structuredClone(guessesDefault),
     keys: structuredClone(keysDefault),
+    pendingKeys: structuredClone(keysDefault),
 
     currentRowGuessIndex: 0,
     currentLetterGuessIndex: 0,
@@ -108,16 +106,15 @@ export const useGameLogicStore = defineStore('gameLogic', {
 
   actions: {
     startGame() {
-      // this.solution = wordlib
-      //   .random({ minLength: 5, maxLength: 5 })
-      //   .toUpperCase()
+      this.solution = wordlib
+        .random({ minLength: 5, maxLength: 5 })
+        .toUpperCase()
       this.guesses = structuredClone(guessesDefault)
       this.keys = structuredClone(keysDefault)
+      this.pendingKeys = structuredClone(keysDefault)
       this.currentRowGuessIndex = 0
       this.currentLetterGuessIndex = 0
       this.gameState = GameState.Playing
-
-      console.log(this.solution)
     },
 
     handleLetterInput(letter: string) {
@@ -164,69 +161,78 @@ export const useGameLogicStore = defineStore('gameLogic', {
       const isValidGuess =
         currentRow?.every((guess) => guess.letter !== '') ?? false
 
-      if (!currentRow || !isValidGuess) return
-
       if (
-        wordlib.exists(
+        !currentRow ||
+        !isValidGuess ||
+        !wordlib.exists(
           currentRow
             .map((g) => g.letter)
             .join('')
             .toLowerCase(),
         )
+      )
+        return
+
+      await this.evaluateGuesses()
+
+      if (
+        this.guesses[this.currentRowGuessIndex]?.every(
+          (guess) => guess.letterState === LetterState.Correct,
+        )
       ) {
-        await this.evaluateGuesses()
+        await this.delay(this.DELAY_MS)
+        this.gameState = GameState.Won
+        return
+      }
 
-        if (
-          this.guesses[this.currentRowGuessIndex]?.every(
-            (guess) => guess.letterState === LetterState.Correct,
-          )
-        ) {
-          this.gameState = GameState.Won
-          return
-        }
+      this.currentRowGuessIndex += 1
+      this.currentLetterGuessIndex = 0
 
-        this.currentRowGuessIndex += 1
-        this.currentLetterGuessIndex = 0
-
-        if (this.currentRowGuessIndex === 6) {
-          this.gameState = GameState.Lost
-        }
+      if (this.currentRowGuessIndex === 6) {
+        await this.delay(this.DELAY_MS)
+        this.gameState = GameState.Lost
       }
     },
 
     async evaluateGuesses() {
-      // TODO: refactor to reduce complexity
-      let stateToSet = LetterState.Default
-      const duplicatePresentLetterGuesses: string[] = []
+      const guessArray = this.guesses[this.currentRowGuessIndex]
+      const presentGuesses: string[] = []
 
-      const currentGuesses = this.guesses[this.currentRowGuessIndex]
-      if (!currentGuesses) return
+      if (!guessArray) return
 
-      for (let index = 0; index < currentGuesses.length; index++) {
-        const guess = currentGuesses[index]
+      for (let i = 0; i < guessArray.length; i++) {
+        let stateToSet = LetterState.Absent
+        const guess = guessArray[i]
 
-        if (guess && guess.letter === this.solutionArray[index]) {
-          stateToSet = LetterState.Correct
-          duplicatePresentLetterGuesses.push(guess.letter)
-        } else if (guess && this.solutionArray.includes(guess.letter)) {
-          if (this.solutionArray.filter((l) => l === guess.letter).length > 1) {
+        if (!guess) return
+
+        const currentGuessLetterIsPresent = this.solutionArray.includes(
+          guess.letter,
+        )
+        const currentGuessLetterIsCorrect =
+          guess.letter === this.solutionArray[i]
+
+        if (currentGuessLetterIsPresent && !currentGuessLetterIsCorrect) {
+          if (
+            this.solutionArray.filter((l) => l === guess.letter).length !==
+            presentGuesses.filter((l) => l === guess.letter).length
+          ) {
             stateToSet = LetterState.Present
-          } else {
-            stateToSet = duplicatePresentLetterGuesses.includes(guess.letter)
-              ? LetterState.Absent
-              : this.solutionArray.includes(guess.letter)
-                ? LetterState.Absent
-                : LetterState.Present
-            duplicatePresentLetterGuesses.push(guess.letter)
+            presentGuesses.push(guess.letter)
           }
-        } else {
-          stateToSet = LetterState.Absent
         }
 
-        if (guess) {
-          await this.setLetterState(guess, stateToSet)
+        if (currentGuessLetterIsCorrect) {
+          presentGuesses.push(guess.letter)
+          stateToSet = LetterState.Correct
         }
+
+        await this.setLetterState(guess, stateToSet)
       }
+
+      await this.delay(this.DELAY_MS)
+
+      this.keys = JSON.parse(JSON.stringify(this.pendingKeys))
     },
 
     async setLetterState(
@@ -239,29 +245,20 @@ export const useGameLogicStore = defineStore('gameLogic', {
       guess.letterState = stateToSet
       guess.hasGuessed = true
 
-      this.keys.forEach((row) => {
+      this.pendingKeys.forEach((row) => {
         row.forEach((key) => {
-          // TODO: fix issue with states not taking president - refactor needed
-          if (guess && key.letter === guess.letter) {
-            if (key.letterState === LetterState.Default) {
-              key.letterState = stateToSet
-            } else {
-              if (key.letterState === LetterState.Correct) {
-                key.letterState = stateToSet
-              } else if (key.letterState === LetterState.Present) {
-                key.letterState =
-                  stateToSet === LetterState.Correct
-                    ? stateToSet
-                    : key.letterState
-              } else {
-                key.letterState = stateToSet
-              }
-            }
+          if (!guess) return
+
+          if (
+            key.letter === guess.letter &&
+            key.letterState !== LetterState.Correct
+          ) {
+            key.letterState = stateToSet
           }
         })
       })
 
-      await delay(300)
+      await delay(this.DELAY_MS)
     },
   },
 })
