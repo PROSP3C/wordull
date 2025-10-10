@@ -41,18 +41,25 @@
 <style lang="scss" scoped>
   .KeyboardKey {
     width: auto;
-    min-width: 2.2rem;
-    height: 3.5rem;
-    padding: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    min-width: 1.25rem;
+    height: 3rem;
+    padding: 0.5rem;
+    font-size: 16px;
     font-weight: bold;
     color: #fff;
     background-color: #888;
     border-radius: 4px;
     user-select: none;
+
+    @media screen and (min-width: 330px) and (min-height: 550px) {
+      min-width: 1.9rem;
+      height: 3.25rem;
+      padding: 0.5rem;
+      font-size: 18px;
+    }
 
     &.absent {
       background: #333;

@@ -18,16 +18,22 @@
 
 <style lang="scss" scoped>
   .LetterSquare {
-    width: 3rem;
-    height: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 22px;
+    width: 2.25rem;
+    height: 2.25rem;
     font-weight: bold;
     color: #fff;
     border: 3px solid #888;
     background: none;
+
+    @media screen and (min-width: 330px) and (min-height: 550px) {
+      font-size: 24px;
+      width: 3rem;
+      height: 3rem;
+    }
 
     &.absent {
       animation: flipTileAbsent 1s ease forwards;

@@ -10,7 +10,7 @@
 
 <template>
   <div
-    class="LetterRow row q-gutter-sm"
+    class="LetterRow row q-gutter-x-sm"
     :class="isInvalidWord ? 'isInvalidWord' : ''"
   >
     <slot />
