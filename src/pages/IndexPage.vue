@@ -7,7 +7,7 @@
   import { GameState } from '@/enums'
   import { computed, ref } from 'vue'
 
-  const { guesses, keys, gameState, currentRowGuessIndex } =
+  const { guesses, keys, gameState, currentRowGuessIndex, solution } =
     storeToRefs(useGameLogicStore())
 
   const seeBoardFromDialog = ref(false)
@@ -18,9 +18,9 @@
     () => gameState.value === GameState.Lost && !seeBoardFromDialog.value,
   )
 
-  const onStartGame = () => {
+  const onStartGame = async () => {
     const gameLogicStore = useGameLogicStore()
-    gameLogicStore.startGame()
+    await gameLogicStore.startGame()
   }
 
   const onSeeBoard = () => {
@@ -65,7 +65,10 @@
     <q-dialog v-model="hasLost">
       <div class="IndexPage-dialog flex column justify-center items-center">
         <h2>You Lost...</h2>
-        <p>Better luck next time.</p>
+        <p>
+          The word was <b>{{ solution }}</b
+          >. Better luck next time.
+        </p>
         <q-btn
           color="primary"
           label="New Game"
@@ -76,7 +79,6 @@
           color="secondary"
           label="See Board"
           icon-right="visibility"
-          style="margin-top: 1rem"
           @click="onSeeBoard()"
         />
       </div>
@@ -99,7 +101,6 @@
           color="secondary"
           label="See Board"
           icon-right="visibility"
-          style="margin-top: 1rem"
           @click="onSeeBoard()"
         />
       </div>
@@ -132,9 +133,21 @@
 
     &-dialog {
       background: #111;
-      padding: 1rem;
+      padding: 3rem;
       border-radius: 4px;
       color: #fff;
+
+      h2 {
+        margin: 0 0 2rem 0;
+      }
+
+      b {
+        color: #ffd000;
+      }
+
+      button {
+        margin-top: 1rem;
+      }
     }
   }
 </style>

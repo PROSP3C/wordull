@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { GameState, LetterState } from '@/enums'
 import wordlib from 'word-lib'
+import { api } from '@/boot/axios'
 
 const guessesDefault = [
   [
@@ -105,10 +106,14 @@ export const useGameLogicStore = defineStore('gameLogic', {
   },
 
   actions: {
-    startGame() {
-      this.solution = wordlib
-        .random({ minLength: 5, maxLength: 5 })
-        .toUpperCase()
+    async startGame() {
+      const response = await api.get('/data/data.json')
+      const wordList = response.data
+
+      this.solution =
+        wordList[Math.floor(Math.random() * wordList.length)].toUpperCase() ||
+        'AUDIO'
+
       this.guesses = structuredClone(guessesDefault)
       this.keys = structuredClone(keysDefault)
       this.pendingKeys = structuredClone(keysDefault)
